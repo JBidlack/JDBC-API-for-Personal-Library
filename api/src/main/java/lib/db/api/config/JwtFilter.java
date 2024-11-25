@@ -19,11 +19,11 @@ public class JwtFilter extends OncePerRequestFilter{
                                     throws ServletException, IOException {
         String header = request.getHeader("Authorization");
         if(header != null && header.startsWith("Bearer ")){
-            header = header.substring(7);
+            String token = header.substring(7);
 
             try{
-                JwtUtil.verifyToken(header);
-                filterChain.doFilter(request, response);
+                Claims claims = JwtUtil.verifyToken(token);
+                request.setAttribute("claims", claims);
             }
             catch (Exception e){
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -35,6 +35,6 @@ public class JwtFilter extends OncePerRequestFilter{
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Token Missing");
         }
-        // filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
 }
