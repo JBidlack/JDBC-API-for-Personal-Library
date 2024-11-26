@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import lib.db.api.config.ConfigDataSource;
 import lib.db.api.config.JwtUtil;
@@ -17,7 +18,8 @@ import lib.db.api.objects.Role;
 
 public class MemberDAO {
     
-    DataSource datasource = null;
+    @Autowired
+    DataSource dataSource;
     Connection conn = null;
     PreparedStatement psmt = null;
     
@@ -28,8 +30,8 @@ public class MemberDAO {
         try {
             boolean existingMember  = memberExists(member);
 
-            datasource = ConfigDataSource.source();
-            conn = datasource.getConnection();
+            
+            conn = dataSource.getConnection();
 
             if(!existingMember && conn !=null){
 
@@ -46,10 +48,12 @@ public class MemberDAO {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (PropertyVetoException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } finally{
+        } 
+        // catch (PropertyVetoException e) {
+        //     // TODO Auto-generated catch block
+        //     e.printStackTrace();
+        // } 
+        finally{
             if(!conn.isClosed() && conn != null){
                 conn.close();
             }
@@ -62,8 +66,8 @@ public class MemberDAO {
         "WHERE username = ? ";
 
         try{
-            datasource = ConfigDataSource.source();
-            conn = datasource.getConnection();
+            
+            conn = dataSource.getConnection();
 
             psmt = conn.prepareStatement(query);
             psmt.setString(1, member.getUsername());
@@ -112,8 +116,8 @@ public class MemberDAO {
         ArrayList<Book> bookList = new ArrayList<>();
 
         try{
-            datasource = ConfigDataSource.source();
-            conn = datasource.getConnection();
+            
+            conn = dataSource.getConnection();
 
             PreparedStatement psmt = conn.prepareStatement(query);
             psmt.setString(1, member.getUsername());
@@ -132,16 +136,17 @@ public class MemberDAO {
         }
         catch(SQLException sql){
             System.err.println(sql.getMessage());
-        } catch (PropertyVetoException e) {
-                    e.printStackTrace();
-                }
+        } 
+        // catch (PropertyVetoException e) {
+        //             e.printStackTrace();
+        //         }
         return null;
     }
 
     private boolean memberExists(Member member) throws SQLException{
         try{
-            datasource = ConfigDataSource.source();
-            conn = datasource.getConnection();
+           
+            conn = dataSource.getConnection();
 
             String query =  "Select username from public.members "+
                             "where username = ?";
