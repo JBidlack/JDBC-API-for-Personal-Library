@@ -2,20 +2,15 @@ package lib.db.api.config;
 
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 
 public class JwtUtil {
     
@@ -23,17 +18,15 @@ public class JwtUtil {
     private static String vite = Variables.getViteKey();
 
     public static String generateToken(String username){
-        
         return Jwts.builder()
                 .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis()+3600000))
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
     } 
 
     public static Claims verifyToken(String token){
-
         try{
             return Jwts.parser()
                 .setSigningKey(key)
@@ -41,19 +34,7 @@ public class JwtUtil {
                 .getBody();
         }
         catch(SignatureException e){
-            throw new RuntimeException("Invalid request: " + e.getLocalizedMessage());
-        }
-        catch (ExpiredJwtException jwt){
-            throw new RuntimeException("Token Expired: " + jwt.getLocalizedMessage());
-        }
-        catch (MalformedJwtException jwt){
-            throw new RuntimeException("Token Malformed: " + jwt.getLocalizedMessage());
-        }
-        catch (UnsupportedJwtException jwt){
-            throw new RuntimeException("Token Unsupported: " + jwt.getLocalizedMessage());
-        }
-        catch (IllegalArgumentException e) {
-            throw new RuntimeException("No token found: " + e.getLocalizedMessage());
+            throw new RuntimeException("Invalid token");
         }
     }
 
