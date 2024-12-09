@@ -15,27 +15,29 @@ import org.springframework.core.env.Environment;
 @Configuration
 public class ConfigDataSource {
 
-    @Value("${spring.datasource.url}")
-    private String url;
+    
 
-    @Value("${spring.datasource.username}")
-    private String username;
+    // @Value("${spring.datasource.url}")
+    // private static String url;
 
-    @Value("${spring.datasource.password}")
-    private String password;
+    // @Value("${spring.datasource.username}")
+    // private static String username;
 
-    @Value("${spring.datasource.driver-class-name}")
-    private String driverClassName;
+    // @Value("${spring.datasource.password}")
+    // private static String password;
 
+    // @Value("${spring.datasource.driver-class-name}")
+    // private static String driverClassName;
+    
     @Bean
-    public DataSource dataSource() throws PropertyVetoException{
+    public static DataSource dataSource() throws PropertyVetoException{
 
         DataSourceBuilder<?> dsb = DataSourceBuilder.create();
-
-        dsb.driverClassName(driverClassName);
-        dsb.url(url);
-        dsb.username(username);
-        dsb.password(password);
+        Variables v = new Variables();
+        dsb.driverClassName(v.getDriver());
+        dsb.url(v.getUrl());
+        dsb.username(v.getUsername());
+        dsb.password(v.getPassword());
 
         return dsb.build();
     }

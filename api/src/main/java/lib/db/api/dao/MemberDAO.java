@@ -67,7 +67,7 @@ public class MemberDAO {
 
         try{
             
-            conn = dataSource.getConnection();
+            conn = ConfigDataSource.dataSource().getConnection();
 
             psmt = conn.prepareStatement(query);
             psmt.setString(1, member.getUsername());
@@ -86,7 +86,7 @@ public class MemberDAO {
                     exists.setEmail(JwtUtil.decryptData(rset.getString("email")));
                     exists.setUsername(rset.getString("username"));
                     exists.setName(JwtUtil.decryptData(rset.getString("name")));
-                    exists.setToken(JwtUtil.generateToken(exists.getUsername()));
+                    exists.setToken(JwtUtil.generateToken(exists));
                     
 
                     // Check to make sure multiple records don't exist which would indicate a problem in the DB

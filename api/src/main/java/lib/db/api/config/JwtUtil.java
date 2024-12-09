@@ -7,19 +7,23 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.google.gson.Gson;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
+import lib.db.api.objects.Member;
 
 public class JwtUtil {
     
     private static String key = Variables.getKey();
     private static String vite = Variables.getViteKey();
 
-    public static String generateToken(String username){
+    public static String generateToken(Member member){
+        Gson gson = new Gson();
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(gson.toJson(member))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis()+3600000))
                 .signWith(SignatureAlgorithm.HS256, key)
