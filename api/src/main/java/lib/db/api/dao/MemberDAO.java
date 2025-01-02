@@ -30,7 +30,6 @@ public class MemberDAO {
         try {
             boolean existingMember  = memberExists(member);
 
-            
             conn = dataSource.getConnection();
 
             if(!existingMember && conn !=null){
@@ -71,7 +70,6 @@ public class MemberDAO {
 
             psmt = conn.prepareStatement(query);
             psmt.setString(1, member.getUsername());
-
 
             ResultSet rset = psmt.executeQuery();
 
