@@ -1,37 +1,64 @@
 package lib.db.api.config;
 
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.FileInputStream;
 import java.util.Properties;
 
-@Component
+import org.springframework.stereotype.Component;
+
+
 public class Variables {
+    private static String url = "";
+    private static String username = "";
+    private static String password = "";
+    private static String driver = "";
+    private static String KEY = "";
+    private static String VITE_KEY = "";
 
-    private String url;
-    private String username;
-    private String password;
-    private String driver;
+    public Variables(){
 
-    private final static String KEY = "Ir3allyWantthisPr0ject2BDoneS00n";
-    private final static String VITE_KEY = "WhyAm1CreatingIt";
-
-    public Variables() {
+    try(FileInputStream fis = new FileInputStream("api\\src\\main\\resources\\application.properties")){
         Properties prop = new Properties();
-        try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
-            if (input == null) {
-                throw new IOException("application.properties not found in classpath.");
-            }
-            prop.load(input);
-            url = prop.getProperty("spring.datasource.url");
-            username = prop.getProperty("spring.datasource.username");
-            password = prop.getProperty("spring.datasource.password");
-            driver = prop.getProperty("spring.datasource.driver-class-name");
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
+        prop.load(fis);
+
+        url = prop.getProperty("db.url");
+        username = prop.getProperty("db.username");
+        password = prop.getProperty("db.password");
+        driver = prop.getProperty("db.driver");
+        KEY = prop.getProperty("db.key");
+        VITE_KEY = prop.getProperty("db.vite_key");
     }
+    catch(Exception e){
+        e.printStackTrace();
+    }
+    }
+    // private String url = env.getProperty("spring.datasource.url");
+    // private String username = env.getProperty("spring.datasource.username");
+    // private String password = env.getProperty("spring.datasource.password");
+    // private String driver = env.getProperty("spring.datasource.driver-class-name");
+        // private final static String url = "jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres";
+        // private final static String username = "postgres.nmkipvazyvwaegxfqotg";
+        // private final static String password = "LjWIbmC62AG3Nfdz";
+        // private final static String driver = "org.postgresql.Driver";
+        // private final static String KEY = "Ir3allyWantthisPr0ject2BDoneS00n";
+        // private final static String VITE_KEY = "WhyAm1CreatingIt";
+    
+        
+
+    // public Variables() {
+    //     Properties prop = new Properties();
+    //     try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {
+    //         if (input == null) {
+    //             throw new IOException("application.properties not found in classpath.");
+    //         }
+    //         prop.load(input);
+    //         url = prop.getProperty("spring.datasource.url");
+    //         username = prop.getProperty("spring.datasource.username");
+    //         password = prop.getProperty("spring.datasource.password");
+    //         driver = prop.getProperty("spring.datasource.driver-class-name");
+    //     } catch (IOException ioe) {
+    //         ioe.printStackTrace();
+    //     }
+    // }
 
     public static String getViteKey() {
         return VITE_KEY;

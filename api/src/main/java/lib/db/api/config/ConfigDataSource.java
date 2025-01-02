@@ -9,17 +9,25 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConfigDataSource {
 
-    private final Variables v;
+    
 
-    @Autowired
-    public ConfigDataSource(Variables v) {
-        this.v = v;
-    }
+    // @Value("${spring.datasource.url}")
+    // private static String url;
 
+    // @Value("${spring.datasource.username}")
+    // private static String username;
+
+    // @Value("${spring.datasource.password}")
+    // private static String password;
+
+    // @Value("${spring.datasource.driver-class-name}")
+    // private static String driverClassName;
+    
     @Bean
-    public DataSource dataSource() {
-        DataSourceBuilder<?> dsb = DataSourceBuilder.create();
+    public static DataSource dataSource() throws PropertyVetoException{
 
+        DataSourceBuilder<?> dsb = DataSourceBuilder.create();
+        Variables v = new Variables();
         dsb.driverClassName(v.getDriver());
         dsb.url(v.getUrl());
         dsb.username(v.getUsername());
