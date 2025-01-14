@@ -2,13 +2,10 @@ package lib.db.api.config;
 
 import java.util.Base64;
 import java.util.Date;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
 import com.google.gson.Gson;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -66,6 +63,28 @@ public class JwtUtil {
         }
 
         return null;
+    }
+
+    public static String refreshToken(String token){
+        try{
+            Claims claims = verifyToken(token);
+
+            if (claims.getExpiration().before(new Date())){
+                return null;
+            }
+
+            String subject = claims.getSubject();
+
+            String newToken = Jwts.builder()
+                                .setSubject(subject)
+                                .setIssuedAt(new Date(System.currentTimeMillis() + 3600000))
+                                .signWith(SignatureAlgorithm.HS256, key)
+                                .compact();
+            return newToken;
+        }
+        catch(Exception e){
+            throw new RuntimeException("Failed to refresh token: " + e.getMessage());
+        }
     }
 
 

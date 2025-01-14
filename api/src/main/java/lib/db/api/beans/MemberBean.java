@@ -2,6 +2,7 @@ package lib.db.api.beans;
 
 import java.sql.SQLException;
 
+import lib.db.api.config.JwtUtil;
 import lib.db.api.dao.MemberDAO;
 import lib.db.api.objects.Member;
 
@@ -17,6 +18,10 @@ public class MemberBean {
     public Member loginMember(Member member) throws SQLException{
         MemberDAO dao = new MemberDAO();
         return dao.loginMember(member);
+    }
+
+    public String tokenRefresh(String token){
+        return JwtUtil.refreshToken(token);
     }
 
 }

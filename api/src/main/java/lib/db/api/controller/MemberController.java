@@ -77,9 +77,36 @@ public class MemberController {
             
             return Response.status(Status.OK).entity(result).build();
 
-        } else{
+        } 
+            
+        return Response.status(Status.BAD_REQUEST).build();
+       
+    }
+
+    @POST
+    @Path("/token")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response refreshToken(@RequestBody String oldToken, @Context HttpServletResponse response){
+        try{
+            MemberBean bean = new MemberBean();
+            String newToken = bean.tokenRefresh(oldToken);
+            Gson gson = new Gson();
+            String result = gson.toJson(newToken);
+
+            Cookie cookie = new Cookie("authToken", result);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(900);
+            response.addCookie(cookie);
+
+            return Response.status(Status.OK).entity(result).build();
+
+        }
+        catch(Exception e){
             return Response.status(Status.BAD_REQUEST).build();
         }
+
     }
 
     @POST
